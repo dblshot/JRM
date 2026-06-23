@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+.filter-orange {
+  filter: brightness(0) saturate(100%) invert(69%) sepia(99%) saturate(749%) hue-rotate(-18deg) brightness(1.05);
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #23263a;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ffaf1b;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e69c1a;
+}
+
+/* Firefox scrollbar styling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ffaf1b #23263a;
+}
