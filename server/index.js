@@ -11,7 +11,7 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const origins = ['https://portal.dblshot.co', 'http://localhost:5173']; // Add your allowed origins here
+const origins = ['https://portal.dblshot.co', 'https://jrm-three.vercel.app', 'http://localhost:5173']; // Add your allowed origins here
 
 app.use(express.json());
 app.use(cors({
