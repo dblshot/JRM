@@ -72,7 +72,7 @@ function SubmissionsDialog({ open, onClose, assignment }) {
                 <tr key={sub.userId} style={{ borderBottom: '1px solid #31344b' }}>
                   <td style={{ padding: '10px 8px', textAlign: 'center' }}>{sub.displayName || sub.username}</td>
                   <td style={{ padding: '10px 8px', textAlign: 'center' }}>{sub.uploadedAt ? new Date(sub.uploadedAt).toLocaleString() : '-'}</td>
-                  <td style={{ padding: '10px 8px', textAlign: 'center' }}>{sub.fileUrl ? <a href={sub.fileUrl} target="_blank" rel="noopener noreferrer" style={{ color: ORANGE }}>View PDF</a> : '-'}</td>
+                  <td style={{ padding: '10px 8px', textAlign: 'center' }}>{sub.fileUrl ? <a href={sub.fileUrl} target="_blank" rel="noopener noreferrer" style={{ color: ORANGE }}>View File</a> : '-'}</td>
                   <td style={{ padding: '10px 8px', textAlign: 'center' }}>{sub.graded ? sub.grade : 'Not graded'}</td>
                   <td style={{ padding: '10px 8px', textAlign: 'center' }}>
                     {sub.graded ? (

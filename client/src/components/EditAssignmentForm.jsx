@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, CircularProgress, MenuItem, InputLabel, Select, FormControl } from '@mui/material';
+import ImageIcon from '@mui/icons-material/Image';
 import useAllLessons from '../hooks/useAllLessons';
+import { uploadToCloudinary } from '../utils/cloudinaryUpload';
 
 const ORANGE = '#ffaf1b';
 const CARD_BG = '#23263a';
@@ -13,10 +15,27 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
     dueDate: assignment.dueDate ? new Date(assignment.dueDate).toISOString().slice(0, 10) : '',
     points: assignment.points || 0,
     lessonId: assignment.lessonId?._id || '',
+    imageUrl: assignment.imageUrl || '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const { lessons, loading: lessonsLoading } = useAllLessons();
+
+  const handleImageChange = async (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+    setUploadingImage(true);
+    setError(null);
+    try {
+      const url = await uploadToCloudinary(selected);
+      setForm((prev) => ({ ...prev, imageUrl: url }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,6 +124,31 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
         sx={{ input: { color: TEXT_COLOR }, label: { color: ORANGE } }}
         InputLabelProps={{ style: { color: ORANGE } }}
       />
+      <Box>
+        <input
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="edit-assignment-image"
+          type="file"
+          onChange={handleImageChange}
+        />
+        <label htmlFor="edit-assignment-image">
+          <Button
+            component="span"
+            variant="outlined"
+            startIcon={uploadingImage ? <CircularProgress size={18} sx={{ color: ORANGE }} /> : <ImageIcon />}
+            sx={{ color: ORANGE, borderColor: ORANGE, textTransform: 'none', fontWeight: 600 }}
+            disabled={uploadingImage}
+          >
+            {uploadingImage ? 'Uploading...' : (form.imageUrl ? 'Change Reference Photo' : 'Add Reference Photo (optional)')}
+          </Button>
+        </label>
+        {form.imageUrl && (
+          <Box sx={{ mt: 2 }}>
+            <img src={form.imageUrl} alt="Reference" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, border: '1px solid #31344b' }} />
+          </Box>
+        )}
+      </Box>
       {error && <Box sx={{ color: 'red', mb: 1 }}>{error}</Box>}
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
         <Button onClick={onClose} sx={{ color: ORANGE }}>Cancel</Button>
@@ -112,7 +156,7 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
           type="submit"
           variant="contained"
           sx={{ background: ORANGE, color: 'white', fontWeight: 600 }}
-          disabled={loading}
+          disabled={loading || uploadingImage}
         >
           {loading ? <CircularProgress size={22} sx={{ color: 'white' }} /> : 'Save'}
         </Button>

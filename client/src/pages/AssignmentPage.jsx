@@ -226,6 +226,17 @@ export default function AssignmentPage() {
           <Typography variant="body1" sx={{ color: TEXT_COLOR, fontSize: '1.1rem', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
             {assignment.description}
           </Typography>
+          {assignment.imageUrl && (
+            <Box sx={{ mt: 3, textAlign: 'center' }}>
+              <a href={assignment.imageUrl} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={assignment.imageUrl}
+                  alt="Assignment reference"
+                  style={{ maxWidth: '100%', maxHeight: 400, borderRadius: 8, border: '1px solid #31344b' }}
+                />
+              </a>
+            </Box>
+          )}
         </Box>
       </Box>
 
@@ -271,12 +282,12 @@ export default function AssignmentPage() {
           </Typography>
           
           <Typography variant="body2" sx={{ color: GRAY, mb: 3 }}>
-            Supported formats: PDF, DOC, DOCX (Max 10MB)
+            Supported formats: PDF, DOC, DOCX, Images (JPG, PNG) (Max 10MB)
           </Typography>
 
           <Box sx={{ mb: 3 }}>
             <input
-              accept=".pdf,.doc,.docx"
+              accept=".pdf,.doc,.docx,image/*"
               style={{ display: 'none' }}
               id="assignment-file"
               type="file"

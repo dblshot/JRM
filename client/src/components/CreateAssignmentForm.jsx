@@ -6,6 +6,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ImageIcon from '@mui/icons-material/Image';
+import { uploadToCloudinary } from '../utils/cloudinaryUpload';
 
 const ORANGE = '#ffaf1b';
 const CARD_BG = '#23263a';
@@ -18,9 +20,26 @@ export default function CreateAssignmentForm({ onSubmit }) {
     dueDate: '',
     points: 0,
     lessonId: '',
+    imageUrl: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleImageChange = async (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+    setUploadingImage(true);
+    setError(null);
+    try {
+      const url = await uploadToCloudinary(selected);
+      setForm((prev) => ({ ...prev, imageUrl: url }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
   const { lessons, loading: lessonsLoading } = useAllLessons();
   const { assignments, loading: assignmentsLoading } = useAllAssignments();
 
@@ -47,7 +66,7 @@ export default function CreateAssignmentForm({ onSubmit }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to create assignment');
       onSubmit(data);
-      setForm({ title: '', description: '', dueDate: '', points: 0, lessonId: '' });
+      setForm({ title: '', description: '', dueDate: '', points: 0, lessonId: '', imageUrl: '' });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -130,13 +149,38 @@ export default function CreateAssignmentForm({ onSubmit }) {
         sx={{ input: { color: TEXT_COLOR }, label: { color: ORANGE } }}
         InputLabelProps={{ style: { color: ORANGE } }}
       />
+      <Box>
+        <input
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="create-assignment-image"
+          type="file"
+          onChange={handleImageChange}
+        />
+        <label htmlFor="create-assignment-image">
+          <Button
+            component="span"
+            variant="outlined"
+            startIcon={uploadingImage ? <CircularProgress size={18} sx={{ color: ORANGE }} /> : <ImageIcon />}
+            sx={{ color: ORANGE, borderColor: ORANGE, textTransform: 'none', fontWeight: 600 }}
+            disabled={uploadingImage}
+          >
+            {uploadingImage ? 'Uploading...' : (form.imageUrl ? 'Change Reference Photo' : 'Add Reference Photo (optional)')}
+          </Button>
+        </label>
+        {form.imageUrl && (
+          <Box sx={{ mt: 2 }}>
+            <img src={form.imageUrl} alt="Reference" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, border: '1px solid #31344b' }} />
+          </Box>
+        )}
+      </Box>
       {error && <Box sx={{ color: 'red', mb: 1 }}>{error}</Box>}
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
         <Button
           type="submit"
           variant="contained"
           sx={{ background: ORANGE, color: 'white', fontWeight: 600 }}
-          disabled={loading}
+          disabled={loading || uploadingImage}
         >
           {loading ? <CircularProgress size={22} sx={{ color: 'white' }} /> : 'Create Assignment'}
         </Button>

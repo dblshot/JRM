@@ -5,7 +5,8 @@ const assignmentSchema = new mongoose.Schema({
     description: { type: String, required: true },
     dueDate: { type: Date, required: true },
     points: { type: Number, required: true },
-    lessonId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson', required: true }
+    lessonId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson', required: true },
+    imageUrl: { type: String }
 });
 
 const Assignment = mongoose.model('Assignment', assignmentSchema);
