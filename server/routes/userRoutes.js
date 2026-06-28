@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
 // Route 2: Get all users and their scores
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find({}, 'username displayName score password admin completedTests');
+    const users = await User.find({}, 'username displayName score password admin completedTests completedAssignments');
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching users', error: err.message });

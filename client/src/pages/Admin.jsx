@@ -9,6 +9,7 @@ import CreateLessonForm from '../components/CreateLessonForm';
 import ViewAssignments from '../components/ViewAssignments';
 import CreateAssignmentForm from '../components/CreateAssignmentForm';
 import TestStatus from '../components/TestStatus';
+import AssignmentStatus from '../components/AssignmentStatus';
 
 const ORANGE = '#ffaf1b';
 const DARK_BG = '#181a20';
@@ -219,6 +220,28 @@ export default function Admin() {
             Test Status
           </Button>
         </Grid>
+        <Grid item>
+          <Button
+            variant={view === 'assignmentStatus' ? 'contained' : 'outlined'}
+            size="large"
+            sx={{
+              minWidth: 180,
+              fontWeight: 'bold',
+              fontSize: 18,
+              bgcolor: view === 'assignmentStatus' ? ORANGE : DARKER_BG,
+              color: view === 'assignmentStatus' ? DARK_BG : ORANGE,
+              borderColor: ORANGE,
+              '&:hover': {
+                bgcolor: ORANGE,
+                color: DARK_BG,
+                borderColor: ORANGE,
+              },
+            }}
+            onClick={() => setView('assignmentStatus')}
+          >
+            Assignment Status
+          </Button>
+        </Grid>
       </Grid>
       <Box maxWidth="1000px" mx="auto">
         {view === 'leaderboard' && (
@@ -238,6 +261,9 @@ export default function Admin() {
         )}
         {view === 'testStatus' && (
           <TestStatus />
+        )}
+        {view === 'assignmentStatus' && (
+          <AssignmentStatus />
         )}
         {view === 'assignmentManagement' && (
           <Box>
