@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -7,8 +7,9 @@ export default function useAllUsers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchUsers = useCallback(() => {
     setLoading(true);
+    setError(null);
     fetch(`${API_BASE}/user`)
       .then(res => res.json())
       .then(data => {
@@ -21,5 +22,9 @@ export default function useAllUsers() {
       });
   }, []);
 
-  return { users, loading, error };
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  return { users, loading, error, refetch: fetchUsers };
 }

@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
 // Route 2: Get all users and their scores
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find({}, 'username displayName score password admin completedTests -_id');
+    const users = await User.find({}, 'username displayName score password admin completedTests');
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching users', error: err.message });
@@ -63,6 +63,25 @@ router.post('/:userId/complete-assignment', async (req, res) => {
     );
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ message: 'Assignment marked as completed', completedAssignments: user.completedAssignments });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add bonus points to a user's score (admin)
+router.post('/:userId/bonus', async (req, res) => {
+  const { points } = req.body;
+  if (typeof points !== 'number' || isNaN(points)) {
+    return res.status(400).json({ error: 'points must be a number' });
+  }
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.userId,
+      { $inc: { score: points } },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'Bonus added', score: user.score });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
