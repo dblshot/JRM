@@ -11,10 +11,29 @@ export default function CreateLessonForm({ onSubmit }) {
   const [title, setTitle] = useState('');
   const [videoLink, setVideoLink] = useState('');
   const [slidesLink, setSlidesLink] = useState('');
+  const [links, setLinks] = useState([]);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const handleLinkChange = (index, field, value) => {
+    setLinks(prev => prev.map((l, i) => (i === index ? { ...l, [field]: value } : l)));
+  };
+  const addLink = () => setLinks(prev => [...prev, { label: '', url: '' }]);
+  const removeLink = (index) => setLinks(prev => prev.filter((_, i) => i !== index));
+
+  const inputStyle = {
+    width: '100%',
+    padding: '12px 14px',
+    borderRadius: 8,
+    background: DARK_BG,
+    border: '1.5px solid #31344b',
+    color: 'white',
+    fontSize: 16,
+    outline: 'none',
+    transition: 'border 0.2s',
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,10 +42,11 @@ export default function CreateLessonForm({ onSubmit }) {
     setSuccess(false);
     try {
       const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const cleanLinks = links.filter(l => l.label.trim() && l.url.trim());
       const res = await fetch(`${API_BASE}/lessons`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, videoLink, slidesLink, notes })
+        body: JSON.stringify({ title, videoLink, slidesLink, links: cleanLinks, notes })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to create lesson');
@@ -34,6 +54,7 @@ export default function CreateLessonForm({ onSubmit }) {
       setTitle('');
       setVideoLink('');
       setSlidesLink('');
+      setLinks([]);
       setNotes('');
       if (onSubmit) onSubmit(data);
     } catch (err) {
@@ -125,6 +146,46 @@ export default function CreateLessonForm({ onSubmit }) {
             onFocus={e => (e.target.style.border = `1.5px solid ${ORANGE}`)}
             onBlur={e => (e.target.style.border = '1.5px solid #31344b')}
           />
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <label style={{ color: LABEL_COLOR, fontWeight: 600, fontSize: 15, marginBottom: 6, display: 'block' }}>Additional Links</label>
+          {links.map((link, index) => (
+            <div key={index} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+              <input
+                type="text"
+                placeholder="Label (e.g. Worksheet)"
+                value={link.label}
+                onChange={e => handleLinkChange(index, 'label', e.target.value)}
+                style={{ ...inputStyle, flex: '0 0 38%' }}
+                onFocus={e => (e.target.style.border = `1.5px solid ${ORANGE}`)}
+                onBlur={e => (e.target.style.border = '1.5px solid #31344b')}
+              />
+              <input
+                type="url"
+                placeholder="https://..."
+                value={link.url}
+                onChange={e => handleLinkChange(index, 'url', e.target.value)}
+                style={{ ...inputStyle, flex: 1 }}
+                onFocus={e => (e.target.style.border = `1.5px solid ${ORANGE}`)}
+                onBlur={e => (e.target.style.border = '1.5px solid #31344b')}
+              />
+              <button
+                type="button"
+                onClick={() => removeLink(index)}
+                style={{ background: 'transparent', border: 'none', color: '#ff5252', fontSize: 22, cursor: 'pointer', lineHeight: 1 }}
+                aria-label="Remove link"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addLink}
+            style={{ background: 'transparent', border: `1.5px dashed ${ORANGE}`, color: ORANGE, borderRadius: 8, padding: '8px 12px', fontWeight: 600, cursor: 'pointer', fontSize: 14, width: '100%' }}
+          >
+            + Add Link
+          </button>
         </div>
         <div style={{ marginBottom: 10 }}>
           <label htmlFor="notes" style={{ color: LABEL_COLOR, fontWeight: 600, fontSize: 15, marginBottom: 6, display: 'block' }}>Notes</label>

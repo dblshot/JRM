@@ -7,6 +7,7 @@ import SlidesIcon from '@mui/icons-material/Animation';
 import QuizIcon from '@mui/icons-material/Quiz';
 import ArticleIcon from '@mui/icons-material/Article';
 import VideoIcon from '@mui/icons-material/OndemandVideo';
+import LinkIcon from '@mui/icons-material/Link';
 
 const ORANGE = '#ffaf1b';
 
@@ -90,6 +91,19 @@ export default function LessonContent({ lesson, test, assignment, isExpanded, on
                 Slides
               </span>
             )}
+            {/* Custom links */}
+            {Array.isArray(lesson.links) && lesson.links.map((link, idx) => (
+              <a
+                key={idx}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-left text-[#ffaf1b] font-semibold text-base hover:text-[#ff9900] transition-colors flex items-center gap-2"
+              >
+                <LinkIcon sx={{ fontSize: 16 }} />
+                {link.label}
+              </a>
+            ))}
             {/* Test Yourself */}
             {test ? (
               <button

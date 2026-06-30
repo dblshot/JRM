@@ -77,6 +77,7 @@ export default function ViewLessons() {
               <th style={{ color: HEADER_COLOR, fontWeight: 700, fontSize: 16, padding: '10px 16px', textAlign: 'center' }}>Title</th>
               <th style={{ color: HEADER_COLOR, fontWeight: 700, fontSize: 16, padding: '10px 16px', textAlign: 'center' }}>Video Link</th>
               <th style={{ color: HEADER_COLOR, fontWeight: 700, fontSize: 16, padding: '10px 16px', textAlign: 'center' }}>Slides Link</th>
+              <th style={{ color: HEADER_COLOR, fontWeight: 700, fontSize: 16, padding: '10px 16px', textAlign: 'center' }}>Links</th>
               <th style={{ color: HEADER_COLOR, fontWeight: 700, fontSize: 16, padding: '10px 16px', textAlign: 'center' }}>Test</th>
               <th style={{ color: HEADER_COLOR, fontWeight: 700, fontSize: 16, padding: '10px 16px', textAlign: 'center' }}>Actions</th>
             </tr>
@@ -92,6 +93,9 @@ export default function ViewLessons() {
                   </td>
                   <td style={{ padding: '14px 16px', fontWeight: 500, textAlign: 'center' }}>
                     {lesson.slidesLink ? <a href={lesson.slidesLink} target="_blank" rel="noopener noreferrer" style={{ color: ORANGE }}>Slides</a> : '—'}
+                  </td>
+                  <td style={{ padding: '14px 16px', fontWeight: 500, textAlign: 'center' }}>
+                    {lesson.links?.length ? `${lesson.links.length} link${lesson.links.length > 1 ? 's' : ''}` : '—'}
                   </td>
                   <td style={{ padding: '14px 16px', textAlign: 'center' }}>
                     {lessonTest ? (

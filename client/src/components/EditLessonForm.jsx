@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, Alert } from '@mui/material';
+import { TextField, Button, Box, Typography, Alert, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EditLessonForm({ lesson, onClose, onUpdate }) {
   const [formData, setFormData] = useState({
     title: lesson.title || '',
     videoLink: lesson.videoLink || '',
     slidesLink: lesson.slidesLink || '',
+    links: lesson.links ? lesson.links.map(l => ({ label: l.label || '', url: l.url || '' })) : [],
     notes: lesson.notes || ''
   });
   const [error, setError] = useState('');
@@ -18,6 +20,26 @@ export default function EditLessonForm({ lesson, onClose, onUpdate }) {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleLinkChange = (index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      links: prev.links.map((l, i) => (i === index ? { ...l, [field]: value } : l))
+    }));
+  };
+  const addLink = () => setFormData(prev => ({ ...prev, links: [...prev.links, { label: '', url: '' }] }));
+  const removeLink = (index) => setFormData(prev => ({ ...prev, links: prev.links.filter((_, i) => i !== index) }));
+
+  const linkFieldSx = {
+    '& .MuiInputLabel-root': { color: '#b0b3c6' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#ffaf1b' },
+    '& .MuiInputBase-input': { color: 'white' },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': { borderColor: '#31344b' },
+      '&:hover fieldset': { borderColor: '#ffaf1b' },
+      '&.Mui-focused fieldset': { borderColor: '#ffaf1b' },
+    },
   };
 
   const handleSubmit = async (e) => {
@@ -33,7 +55,10 @@ export default function EditLessonForm({ lesson, onClose, onUpdate }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          links: formData.links.filter(l => l.label.trim() && l.url.trim())
+        })
       });
 
       const data = await response.json();
@@ -156,6 +181,41 @@ export default function EditLessonForm({ lesson, onClose, onUpdate }) {
           },
         }}
       />
+
+      <Box sx={{ mt: 2 }}>
+        <Typography sx={{ color: '#ffaf1b', fontWeight: 600, fontSize: 15, mb: 1 }}>
+          Additional Links
+        </Typography>
+        {formData.links.map((link, index) => (
+          <Box key={index} sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 1 }}>
+            <TextField
+              label="Label"
+              value={link.label}
+              onChange={e => handleLinkChange(index, 'label', e.target.value)}
+              size="small"
+              sx={{ ...linkFieldSx, flex: '0 0 35%' }}
+            />
+            <TextField
+              label="URL"
+              value={link.url}
+              onChange={e => handleLinkChange(index, 'url', e.target.value)}
+              size="small"
+              sx={{ ...linkFieldSx, flex: 1 }}
+            />
+            <IconButton onClick={() => removeLink(index)} sx={{ color: '#ff5252' }} aria-label="Remove link">
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        ))}
+        <Button
+          onClick={addLink}
+          variant="outlined"
+          fullWidth
+          sx={{ borderColor: '#ffaf1b', color: '#ffaf1b', borderStyle: 'dashed', textTransform: 'none', mt: 0.5, '&:hover': { borderColor: '#ff9d00', bgcolor: 'rgba(255,175,27,0.04)' } }}
+        >
+          + Add Link
+        </Button>
+      </Box>
 
       <TextField
         fullWidth
