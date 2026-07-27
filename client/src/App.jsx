@@ -9,6 +9,7 @@ import TestEditPage from './pages/TestEditPage';
 import TestTakingPage from './pages/TestTakingPage';
 import AssignmentPage from './pages/AssignmentPage';
 import AssignmentEditPage from './pages/AssignmentEditPage';
+import FeedbackPage from './pages/FeedbackPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/test/:testId" element={<TestTakingPage />} />
         <Route path="/assignment" element={<AssignmentPage />} />
         <Route path="/admin/assignments" element={<AssignmentEditPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
       </Routes>
     </Router>
   );

@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const lessonRoutes = require('./routes/lessonRoutes');
 const testRoutes = require('./routes/testRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 const cors = require('cors');
 
 
@@ -32,6 +33,7 @@ app.use('/user', userRoutes);
 app.use('/lessons', lessonRoutes);
 app.use('/tests', testRoutes);
 app.use('/assignments', assignmentRoutes);
+app.use('/feedback', feedbackRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

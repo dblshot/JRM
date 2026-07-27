@@ -4,6 +4,7 @@ import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import LessonList from './LessonList';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import FeedbackIcon from '@mui/icons-material/RateReview';
 import useAllTests from '../hooks/useAllTests';
 
 const CARD_BG = '#23263a';
@@ -16,6 +17,11 @@ export default function Sidebar({ open, onClose, lessons, loading, error }) {
 
   const handleLeaderboardClick = () => {
     navigate('/leaderboard');
+    onClose();
+  };
+
+  const handleFeedbackClick = () => {
+    navigate('/feedback');
     onClose();
   };
 
@@ -53,6 +59,13 @@ export default function Sidebar({ open, onClose, lessons, loading, error }) {
       >
         <EmojiEventsIcon className="text-[#ffaf1b]" />
         <span className="font-semibold">Leaderboard</span>
+      </button>
+      <button
+        onClick={handleFeedbackClick}
+        className="flex items-center gap-2 px-6 py-4 w-full text-[#ffaf1b] transition-colors border-t border-white/10 hover:cursor-pointer"
+      >
+        <FeedbackIcon className="text-[#ffaf1b]" />
+        <span className="font-semibold">Course Feedback</span>
       </button>
     </Drawer>
   );
