@@ -85,6 +85,7 @@ export default function FeedbackPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  const [name, setName] = useState('');
   const [courseContentRating, setCourseContentRating] = useState('');
   const [favoriteActivity, setFavoriteActivity] = useState('');
   const [instructorRating, setInstructorRating] = useState('');
@@ -135,7 +136,7 @@ export default function FeedbackPage() {
         body: JSON.stringify({
           userId: user?._id,
           username: user?.username,
-          displayName: user?.displayName || user?.username,
+          displayName: name.trim() || user?.displayName || user?.username || '',
           courseContentRating: Number(courseContentRating),
           favoriteActivity,
           instructorRating: Number(instructorRating),
@@ -203,6 +204,26 @@ export default function FeedbackPage() {
           </Alert>
         ) : (
           <Box component="form" onSubmit={handleSubmit}>
+            <Box sx={{ background: CARD_BG, borderRadius: 3, p: 3, mb: 3 }}>
+              <Typography sx={{ color: ORANGE, fontWeight: 700, fontSize: 18, mb: 2 }}>
+                Your name <span style={{ color: GRAY, fontWeight: 500, fontSize: 14 }}>(optional)</span>
+              </Typography>
+              <TextField
+                fullWidth
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                sx={{
+                  '& .MuiInputBase-input': { color: TEXT_COLOR },
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#31344b' },
+                    '&:hover fieldset': { borderColor: ORANGE },
+                    '&.Mui-focused fieldset': { borderColor: ORANGE },
+                  },
+                }}
+              />
+            </Box>
+
             <QuestionCard number="1" title="How would you rate the course content?">
               <FormControl>
                 <RadioGroup
