@@ -145,7 +145,20 @@ export default function FeedbackPage() {
           recommendToFriend,
         }),
       });
-      const data = await res.json();
+
+      const contentType = res.headers.get('content-type') || '';
+      let data = null;
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(
+          res.status === 404
+            ? 'Feedback API is not available yet. Please ask an admin to redeploy the backend.'
+            : (text || 'Failed to submit feedback')
+        );
+      }
+
       if (!res.ok) throw new Error(data.error || 'Failed to submit feedback');
 
       setAlreadySubmitted(true);
@@ -160,7 +173,7 @@ export default function FeedbackPage() {
         customClass: { popup: 'swal2-dark' },
       });
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to submit feedback');
     } finally {
       setSubmitting(false);
     }
