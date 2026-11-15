@@ -6,6 +6,7 @@ const lessonRoutes = require('./routes/lessonRoutes');
 const testRoutes = require('./routes/testRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const archiveRoutes = require('./routes/archiveRoutes');
 const cors = require('cors');
 
 
@@ -14,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 const origins = ['https://portal.dblshot.co', 'https://jrm-three.vercel.app', 'http://localhost:5173']; // Add your allowed origins here
 
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
 app.use(cors({
   origin: origins,
   credentials: true
@@ -34,6 +35,7 @@ app.use('/lessons', lessonRoutes);
 app.use('/tests', testRoutes);
 app.use('/assignments', assignmentRoutes);
 app.use('/feedback', feedbackRoutes);
+app.use('/archives', archiveRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

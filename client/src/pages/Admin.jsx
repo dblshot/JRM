@@ -11,6 +11,7 @@ import CreateAssignmentForm from '../components/CreateAssignmentForm';
 import TestStatus from '../components/TestStatus';
 import AssignmentStatus from '../components/AssignmentStatus';
 import ViewFeedback from '../components/ViewFeedback';
+import ViewArchives from '../components/ViewArchives';
 
 const ORANGE = '#ffaf1b';
 const DARK_BG = '#181a20';
@@ -265,6 +266,28 @@ export default function Admin() {
             Feedback
           </Button>
         </Grid>
+        <Grid item>
+          <Button
+            variant={view === 'archives' ? 'contained' : 'outlined'}
+            size="large"
+            sx={{
+              minWidth: 180,
+              fontWeight: 'bold',
+              fontSize: 18,
+              bgcolor: view === 'archives' ? ORANGE : DARKER_BG,
+              color: view === 'archives' ? DARK_BG : ORANGE,
+              borderColor: ORANGE,
+              '&:hover': {
+                bgcolor: ORANGE,
+                color: DARK_BG,
+                borderColor: ORANGE,
+              },
+            }}
+            onClick={() => setView('archives')}
+          >
+            Archives
+          </Button>
+        </Grid>
       </Grid>
       <Box maxWidth="1000px" mx="auto">
         {view === 'leaderboard' && (
@@ -290,6 +313,9 @@ export default function Admin() {
         )}
         {view === 'feedback' && (
           <ViewFeedback />
+        )}
+        {view === 'archives' && (
+          <ViewArchives />
         )}
         {view === 'assignmentManagement' && (
           <Box>
