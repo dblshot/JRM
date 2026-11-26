@@ -251,7 +251,10 @@ export default function AssignmentPage() {
               )}
             </Box>
           )}
-          {Array.isArray(assignment.links) && assignment.links.map((link) => (
+          {[...(assignment.links || []), ...(assignment.lessonId?.links || [])]
+            .filter((link) => link?.url && link.url !== assignment.imageUrl)
+            .filter((link, index, all) => all.findIndex((item) => item.url === link.url) === index)
+            .map((link) => (
             <Box key={link.url} sx={{ mt: 2, textAlign: 'center' }}>
               <Button
                 component="a"
