@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, CircularProgress, MenuItem, InputLabel, Select, FormControl } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import useAllLessons from '../hooks/useAllLessons';
 import { uploadToCloudinary } from '../utils/cloudinaryUpload';
 
@@ -22,8 +23,7 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
   const [uploadingImage, setUploadingImage] = useState(false);
   const { lessons, loading: lessonsLoading } = useAllLessons();
 
-  const handleImageChange = async (e) => {
-    const selected = e.target.files[0];
+  const uploadFile = async (selected) => {
     if (!selected) return;
     setUploadingImage(true);
     setError(null);
@@ -35,6 +35,17 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
     } finally {
       setUploadingImage(false);
     }
+  };
+
+  const handleImageChange = (e) => uploadFile(e.target.files[0]);
+
+  const handlePdfChange = (e) => {
+    const selected = e.target.files[0];
+    if (selected && selected.type !== 'application/pdf' && !selected.name.toLowerCase().endsWith('.pdf')) {
+      setError('Please choose a PDF file');
+      return;
+    }
+    uploadFile(selected);
   };
 
   const handleChange = (e) => {
@@ -124,7 +135,7 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
         sx={{ input: { color: TEXT_COLOR }, label: { color: ORANGE } }}
         InputLabelProps={{ style: { color: ORANGE } }}
       />
-      <Box>
+      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
         <input
           accept="image/*"
           style={{ display: 'none' }}
@@ -140,15 +151,39 @@ export default function EditAssignmentForm({ assignment, onUpdate, onClose }) {
             sx={{ color: ORANGE, borderColor: ORANGE, textTransform: 'none', fontWeight: 600 }}
             disabled={uploadingImage}
           >
-            {uploadingImage ? 'Uploading...' : (form.imageUrl ? 'Change Reference Photo' : 'Add Reference Photo (optional)')}
+            {uploadingImage ? 'Uploading...' : (form.imageUrl && !/\.pdf($|\?)/i.test(form.imageUrl) ? 'Change Reference Photo' : 'Add Reference Photo (optional)')}
           </Button>
         </label>
-        {form.imageUrl && (
-          <Box sx={{ mt: 2 }}>
-            <img src={form.imageUrl} alt="Reference" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, border: '1px solid #31344b' }} />
-          </Box>
-        )}
+        <input
+          accept=".pdf,application/pdf"
+          style={{ display: 'none' }}
+          id="edit-assignment-pdf"
+          type="file"
+          onChange={handlePdfChange}
+        />
+        <label htmlFor="edit-assignment-pdf">
+          <Button
+            component="span"
+            variant="outlined"
+            startIcon={uploadingImage ? <CircularProgress size={18} sx={{ color: ORANGE }} /> : <PictureAsPdfIcon />}
+            sx={{ color: ORANGE, borderColor: ORANGE, textTransform: 'none', fontWeight: 600 }}
+            disabled={uploadingImage}
+          >
+            {uploadingImage ? 'Uploading...' : (/\.pdf($|\?)/i.test(form.imageUrl) ? 'Change PDF' : 'Add PDF (optional)')}
+          </Button>
+        </label>
       </Box>
+      {form.imageUrl && (
+        <Box>
+          {/\.pdf($|\?)/i.test(form.imageUrl) ? (
+            <a href={form.imageUrl} target="_blank" rel="noopener noreferrer" style={{ color: ORANGE, fontWeight: 600 }}>
+              Open attached PDF
+            </a>
+          ) : (
+            <img src={form.imageUrl} alt="Reference" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, border: '1px solid #31344b' }} />
+          )}
+        </Box>
+      )}
       {error && <Box sx={{ color: 'red', mb: 1 }}>{error}</Box>}
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
         <Button onClick={onClose} sx={{ color: ORANGE }}>Cancel</Button>

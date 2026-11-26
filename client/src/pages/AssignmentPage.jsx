@@ -228,13 +228,27 @@ export default function AssignmentPage() {
           </Typography>
           {assignment.imageUrl && (
             <Box sx={{ mt: 3, textAlign: 'center' }}>
-              <a href={assignment.imageUrl} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={assignment.imageUrl}
-                  alt="Assignment reference"
-                  style={{ maxWidth: '100%', maxHeight: 400, borderRadius: 8, border: '1px solid #31344b' }}
-                />
-              </a>
+              {/\.pdf($|\?)/i.test(assignment.imageUrl) ? (
+                <Button
+                  component="a"
+                  href={assignment.imageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="contained"
+                  startIcon={<AssignmentIcon />}
+                  sx={{ background: ORANGE, color: 'white', fontWeight: 700, textTransform: 'none', px: 3 }}
+                >
+                  Open brief (PDF)
+                </Button>
+              ) : (
+                <a href={assignment.imageUrl} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={assignment.imageUrl}
+                    alt="Assignment reference"
+                    style={{ maxWidth: '100%', maxHeight: 400, borderRadius: 8, border: '1px solid #31344b' }}
+                  />
+                </a>
+              )}
             </Box>
           )}
         </Box>
