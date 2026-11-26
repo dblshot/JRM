@@ -251,6 +251,21 @@ export default function AssignmentPage() {
               )}
             </Box>
           )}
+          {Array.isArray(assignment.links) && assignment.links.map((link) => (
+            <Box key={link.url} sx={{ mt: 2, textAlign: 'center' }}>
+              <Button
+                component="a"
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="contained"
+                startIcon={<AssignmentIcon />}
+                sx={{ background: ORANGE, color: 'white', fontWeight: 700, textTransform: 'none', px: 3 }}
+              >
+                {link.label}
+              </Button>
+            </Box>
+          ))}
         </Box>
       </Box>
 
